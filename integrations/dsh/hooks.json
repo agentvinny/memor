@@ -1,0 +1,60 @@
+{
+  "SessionStart": [
+    {
+      "matcher": "*",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "/home/adlokib/data/venvs/memory/bin/memor session-event --harness dsh --event start",
+          "timeout": 10
+        },
+        {
+          "type": "command",
+          "comment": "Session-tree injection: stdout becomes hookSpecificOutput.additionalContext, which the hooks-claude-code bridge merges and injects as a session-start user message. Status goes to stderr (never the envelope). Empty doc = nothing printed = no injection.",
+          "command": "/home/adlokib/data/venvs/memory/bin/memor inject --envelope",
+          "timeout": 60
+        }
+      ]
+    }
+  ],
+  "UserPromptSubmit": [
+    {
+      "hooks": [
+        {
+          "type": "command",
+          "command": "/home/adlokib/data/venvs/memory/bin/memor session-event --harness dsh --event prompt",
+          "timeout": 10
+        },
+        {
+          "type": "command",
+          "comment": "First-turn injection, once per session lifetime: the session-tree envelope rides the first pre-step (same moment the host injects AGENTS.md reminders). Emits nothing when already delivered or no history exists. The SessionStart inject above stays as a best-effort fast path; the once-marker makes double delivery impossible.",
+          "command": "/home/adlokib/data/venvs/memory/bin/memor inject --envelope --point user-prompt",
+          "timeout": 30
+        }
+      ]
+    }
+  ],
+  "PostToolUse": [
+    {
+      "matcher": "*",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "/home/adlokib/data/venvs/memory/bin/memor session-event --harness dsh --event tool",
+          "timeout": 10
+        }
+      ]
+    }
+  ],
+  "Stop": [
+    {
+      "hooks": [
+        {
+          "type": "command",
+          "command": "/home/adlokib/data/venvs/memory/bin/memor session-event --harness dsh --event stop",
+          "timeout": 10
+        }
+      ]
+    }
+  ]
+}

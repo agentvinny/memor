@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "memor"
+version = "0.1.0"
+description = "Durable, tool-agnostic, temporal project/environment memory for agents: capture raw evidence, consolidate into provenance-linked facts/decisions, query via MCP."
+requires-python = ">=3.10"
+dependencies = [
+    "mcp>=1.2.0",
+    "anthropic>=0.42.0",
+    "watchdog>=4.0.0",
+    "fastmcp>=3.4.7",
+]
+
+[project.scripts]
+memor = "memor.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["memor"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
